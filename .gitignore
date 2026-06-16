@@ -1,0 +1,20 @@
+# Secretos locales
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Archivos temporales del pipeline
+pipeline_log.txt
+posdespachos_acumulado.xlsx
+PD*.zip
+
+# La DB SÍ va al repo (se actualiza diariamente por el bot)
+# posdespacho_amm.db  <- NO ignorar
+
+# Backups
+*.bak
+*.orig

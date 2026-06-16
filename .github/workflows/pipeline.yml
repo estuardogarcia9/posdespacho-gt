@@ -1,0 +1,41 @@
+name: Pipeline Posdespachos AMM
+
+on:
+  schedule:
+    - cron: '30 13 * * *'   # 7:30 AM Guatemala (UTC-6)
+  workflow_dispatch:         # permite correrlo manualmente desde GitHub
+
+jobs:
+  pipeline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GH_PAT }}
+          fetch-depth: 1
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Instalar dependencias
+        run: pip install -r requirements.txt
+
+      - name: Ejecutar pipeline
+        env:
+          XAI_API_KEY: ${{ secrets.XAI_API_KEY }}
+          NEOCITIES_API_KEY: ${{ secrets.NEOCITIES_API_KEY }}
+        run: python pipeline_posdespacho.py
+
+      - name: Commit DB y JSON actualizados
+        run: |
+          git config user.name "posdespacho-bot"
+          git config user.email "bot@noreply.github.com"
+          git add posdespacho_amm.db subeventos_gemini.json mapa_posdespachos_gemini.html || true
+          git diff --staged --quiet || git commit -m "update: posdespacho $(date +%Y-%m-%d)"
+          git push

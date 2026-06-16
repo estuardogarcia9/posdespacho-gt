@@ -1,0 +1,26 @@
+title: Posdespachos AMM - Guatemala
+description: Base de datos pública de eventos eléctricos del posdespacho diario del AMM (Administrador del Mercado Mayorista de Guatemala).
+databases:
+  posdespacho_amm:
+    title: Posdespachos AMM
+    description: Eventos eléctricos parseados del posdespacho diario del AMM
+    tables:
+      posdespachos_raw:
+        title: Posdespachos Raw
+        description: Eventos crudos extraídos del Excel del AMM
+        sort_desc: fecha_ini
+      eventos_ia:
+        title: Eventos IA
+        description: Interrupciones eléctricas confirmadas por IA (xAI Grok)
+        sort_desc: fecha_ini
+      dim_activos:
+        title: Activos de Transmisión
+        description: Catálogo de activos (líneas, subestaciones, generadores)
+      checkpoint:
+        title: Checkpoint IA
+        description: Estado de procesamiento por id_grupo
+plugins:
+  datasette-render-markdown:
+    columns:
+      - narrativa_amm
+      - narrativa

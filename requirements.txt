@@ -1,0 +1,6 @@
+requests
+python-docx
+openpyxl
+pandas
+openai
+datasette
