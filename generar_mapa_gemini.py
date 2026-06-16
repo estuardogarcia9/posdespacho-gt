@@ -8,6 +8,8 @@ descompuestos por Gemini AI desde los posdespachos del AMM.
 import re
 import json
 import math
+import base64
+import struct
 import pandas as pd
 from datetime import datetime
 from pathlib import Path
@@ -521,6 +523,21 @@ def main():
     except Exception:
         fecha_display = date_max
 
+    # Logo CNEE embebido en base64 para el informe
+    logo_b64, logo_w, logo_h = '', 0, 0
+    for _lname in ('cnee_logo_full.png', 'cnee_logo.png'):
+        _lp = BASE / 'assets' / _lname
+        if _lp.exists():
+            _raw = _lp.read_bytes()
+            logo_b64 = 'data:image/png;base64,' + base64.b64encode(_raw).decode()
+            try:
+                logo_w, logo_h = struct.unpack('>II', _raw[16:24])
+                _scale = 52 / logo_h
+                logo_w, logo_h = int(logo_w * _scale), 52
+            except Exception:
+                logo_w, logo_h = 120, 52
+            break
+
     html = f"""<!DOCTYPE html>
 <html lang="es">
 <head>
@@ -808,10 +825,11 @@ body {{ font-family: var(--cnee-font); -webkit-font-smoothing:antialiased; text-
     <div class="tab-bar">
         <button class="tab-btn active" id="tabbtn-procesados" onclick="switchTab('procesados')">Procesados</button>
         <button class="tab-btn" id="tabbtn-raw" onclick="switchTab('raw')">Raw</button>
+        <button onclick="generarInforme()" title="Generar informe del período visible" style="margin-left:auto;background:var(--gold);color:var(--navy-950);border:0;padding:5px 10px;border-radius:7px;font-family:inherit;font-weight:700;font-size:11px;cursor:pointer;white-space:nowrap;">&#128196; Informe</button>
     </div>
     <div class="tab-content" id="tab-procesados"></div>
     <div class="tab-content" id="tab-raw" style="display:none;"></div>
-    <div style="text-align:right;margin-top:8px;">
+    <div style="margin-top:10px;padding-top:8px;border-top:1px solid rgba(255,255,255,0.08);text-align:right;">
         <span style="cursor:pointer;color:#E2B45F;font-size:11px;" onclick="document.getElementById('infoPanel').style.display='none';document.getElementById('toggleBtn').style.display='block';">&#x2715; Cerrar</span>
     </div>
 </div>
@@ -903,6 +921,12 @@ body {{ font-family: var(--cnee-font); -webkit-font-smoothing:antialiased; text-
 {tipo_checkboxes_3d}
         </div>
         <button class="d3-fbtn reset" id="d3Reset">&#x21BA; Reset filtros</button>
+        <h4 style="margin-top:16px;">Capa base</h4>
+        <div class="d3-seg">
+            <button id="d3baseLight"              onclick="d3setBase('light')">&#9728; Claro</button>
+            <button id="d3baseDark"  class="active" onclick="d3setBase('dark')">&#9790; Oscuro</button>
+        </div>
+        <button class="d3-fbtn" style="margin-top:12px;" onclick="generarInforme()">&#128196; Generar informe</button>
     </div>
     <div class="d3-hud" style="bottom:8px;left:10px;font-size:11px;color:#fff;pointer-events:none;">Autor CNEE: Cient&iacute;fico de datos, Ing. Estuardo Garc&iacute;a<br><span style="color:#E2B45F;">&#x1F4C5; &Uacute;ltimo posdespacho: {fecha_display}</span></div>
     <button id="btn3d" class="btn-3d" title="Ver en 2D">&#x1F5FA;&#xFE0F; Ver en 2D</button>
@@ -920,6 +944,9 @@ var SUBS = {subs_js};
 var LINES = {lines_js};
 var ALL_EVENTS = {events_js};
 var ALL_SUBEVENTS = {subevents_js};
+var LOGO = "{logo_b64}";
+var LOGO_W = {logo_w}, LOGO_H = {logo_h};
+var ULTIMA_FECHA = "{fecha_display}";
 var TOPO_SUBS = {topo_subs_js};
 var TOPO_LINES = {topo_lines_js};
 
@@ -1365,7 +1392,7 @@ applyFilters();
 
 /* ═══════════════ Vista 3D (deck.gl) — activable desde el mapa 2D ═══════════════ */
 var deck3d = null;
-var d3state = {{ rep:'col', metric:'count', color:'intensity', base:'sat', lines:true, elev:300, dim:'3d' }};
+var d3state = {{ rep:'col', metric:'count', color:'intensity', base:'dark', lines:true, elev:300, dim:'3d' }};
 
 var D3_SUBS = [], D3_PTS = [], D3_MAXC = 1, D3_MAXH = 1;
 
@@ -1403,12 +1430,19 @@ function d3applyFilter() {{
 }}
 function d3activeData() {{ return D3_SUBS; }}
 function d3setAll(sel, val) {{ document.querySelectorAll(sel).forEach(function(cb){{ cb.checked = val; }}); d3applyFilter(); }}
+function d3setBase(b) {{
+    d3state.base = b;
+    document.getElementById('d3baseLight').classList.toggle('active', b === 'light');
+    document.getElementById('d3baseDark').classList.toggle('active',  b === 'dark');
+    if (deck3d) deck3d.setProps({{ layers: d3layers() }});
+}}
 var D3_LINES = LINES.map(function(ln){{ return {{ v: ln.v, path: ln.coords.map(function(c){{ return [c[1], c[0]]; }}) }}; }});
 var DEPTOS_GEO = {deptos_geo_js};
 
 var D3_BASEMAPS = {{
-    dark: 'https://a.basemaps.cartocdn.com/dark_all/{{z}}/{{x}}/{{y}}.png',
-    sat:  'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{{z}}/{{y}}/{{x}}'
+    light: 'https://a.basemaps.cartocdn.com/light_all/{{z}}/{{x}}/{{y}}.png',
+    dark:  'https://a.basemaps.cartocdn.com/dark_all/{{z}}/{{x}}/{{y}}.png',
+    sat:   'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{{z}}/{{y}}/{{x}}'
 }};
 
 function d3typeColor(t) {{
@@ -1462,16 +1496,17 @@ function d3linesLayer() {{
     }});
 }}
 function d3borders() {{
+    var col = d3state.base === 'light' ? [60, 60, 80, 200] : [255, 255, 255, 165];
     return new deck.GeoJsonLayer({{
         id: 'd3borders', data: DEPTOS_GEO,
         stroked: true, filled: false, pickable: false,
-        getLineColor: [255, 255, 255, 165], getLineWidth: 1.5,
+        getLineColor: col, getLineWidth: 1.5,
         lineWidthUnits: 'pixels', lineWidthMinPixels: 1
     }});
 }}
 function d3layers() {{
     var ls = [d3basemap()];
-    if (d3state.base === 'sat' && DEPTOS_GEO) ls.push(d3borders());
+    if (DEPTOS_GEO) ls.push(d3borders());
     if (d3state.lines) ls.push(d3linesLayer());
     ls.push(d3columns());
     return ls;
@@ -1567,6 +1602,143 @@ document.getElementById('d3Reset').addEventListener('click', function() {{
     document.querySelectorAll('.tipo3-cb').forEach(function(cb){{ cb.checked = true; }});
     d3applyFilter();
 }});
+
+// ── Informe CNEE ──────────────────────────────────────────────────────────────
+function generarInforme() {{
+    var evs = filterSubevents();
+    if (!evs.length) {{ alert('No hay eventos en el rango seleccionado. Ajusta los filtros primero.'); return; }}
+
+    var f = getFilterState();
+    var periodo = (f.dateFrom || '{date_min}') + ' al ' + (f.dateTo || '{date_max}');
+
+    // KPIs globales
+    var nDisp  = evs.filter(function(e) {{ return e.tipo === 'disparo'; }}).length;
+    var nMant  = evs.filter(function(e) {{ return e.tipo === 'mantenimiento'; }}).length;
+    var nDesen = evs.filter(function(e) {{ return e.tipo === 'desenergizacion'; }}).length;
+    var nMan   = evs.filter(function(e) {{ return e.tipo === 'maniobra'; }}).length;
+    var nOtro  = evs.length - nDisp - nMant - nDesen - nMan;
+    var totalH = evs.reduce(function(a, e) {{ return a + (e.duracion || 0); }}, 0);
+
+    // Agrupar por activo
+    var grupos = {{}};
+    evs.forEach(function(e) {{
+        var key = e.activo || '(sin activo)';
+        if (!grupos[key]) grupos[key] = [];
+        grupos[key].push(e);
+    }});
+    var activos = Object.keys(grupos).sort();
+
+    // CSS compartido (colores CNEE)
+    var cssBase = 'body{{font-family:Century Gothic,Segoe UI,sans-serif;color:#274369;margin:0;}}'
+        + '.hd{{background:#fff;padding:16px 24px;border-bottom:3px solid #CE9332;}}'
+        + '.hdt{{border-collapse:collapse;}} .hdt td{{border:0;padding:0 16px 0 0;background:#fff;vertical-align:middle;}}'
+        + '.hd h1{{font-size:18px;margin:0 0 2px;color:#274369;}} .hd .s{{color:#CE9332;font-size:12px;}}'
+        + '.body{{padding:20px 24px;}}'
+        + 'h2{{color:#274369;font-size:13px;border-bottom:2px solid #CE9332;padding-bottom:4px;margin:18px 0 8px;}}'
+        + 'p{{font-size:12px;line-height:1.6;margin:0 0 8px;}}'
+        + '.boxt{{width:100%;border-collapse:separate;border-spacing:7px 0;margin:10px 0;table-layout:fixed;}}'
+        + 'td.kpi{{background:#f3f6fb;border-left:4px solid #CE9332;padding:10px;border-radius:6px;border-bottom:0;}}'
+        + '.kpi b{{display:block;font-size:20px;color:#274369;}} .kpi span{{font-size:11px;color:#5b6b86;}}'
+        + 'table.det{{width:100%;border-collapse:collapse;font-size:10.5px;margin-top:6px;}}'
+        + 'table.det th{{background:#274369;color:#fff;padding:6px;text-align:left;}}'
+        + 'table.det td{{padding:5px 6px;border-bottom:1px solid #dde4ef;vertical-align:top;}}'
+        + 'table.det tr:nth-child(even) td{{background:#f7f9fc;}}'
+        + '.act-blk{{margin:14px 0;page-break-inside:avoid;}}'
+        + '.act-hd{{font-size:12.5px;font-weight:700;color:#274369;border-bottom:2px solid #CE9332;padding-bottom:3px;margin-bottom:6px;}}'
+        + '.act-hd .meta{{float:right;color:#8c9bb8;font-weight:400;font-size:11px;}}'
+        + '.t-disp{{color:#c0392b;font-weight:700;}} .t-mant{{color:#CE9332;font-weight:600;}} .t-desen{{color:#7b1fa2;font-weight:600;}} .t-man{{color:#1565c0;}}'
+        + '.narr{{font-size:10px;color:#5b6b86;padding-top:3px;line-height:1.4;}}'
+        + '.ft{{margin-top:18px;font-size:10px;color:#8c9bb8;border-top:1px solid #dde4ef;padding-top:8px;}}';
+
+    var cssNav = '@page{{margin:0;}}'
+        + '.pgtbl{{width:100%;border-collapse:collapse;margin:0;}}'
+        + '.pgtbl td.pgpad{{height:9mm;padding:0;border:0;background:#fff;}}'
+        + '.pgtbl td.pgmain{{padding:0 11mm;border:0;background:#fff;}}'
+        + '.btns{{position:fixed;top:12px;right:12px;}}'
+        + '.btn-acc{{display:inline-block;background:#CE9332;color:#1b2f4a;border:0;padding:9px 16px;border-radius:8px;font-weight:700;cursor:pointer;font-family:inherit;margin-left:8px;font-size:12px;text-decoration:none;}}'
+        + '@media print{{.btns{{display:none;}}}}';
+
+    var cssWord = '@page Sec1{{size:8.5in 11.0in;margin:18mm 16mm;}} div.Sec1{{page:Sec1;}}'
+        + '.act-hd .meta{{float:none;display:block;}}'
+        + '.boxt{{border-collapse:collapse;border-spacing:0;}}'
+        + 'td.kpi{{border:1px solid #dde4ef;border-left:4px solid #CE9332;}}'
+        + '.act-blk,.act-blk table,tr{{page-break-inside:avoid;}}'
+        + '.act-hd{{page-break-after:avoid;}} h2{{page-break-after:avoid;}}';
+
+    function tipoLabel(e) {{
+        var m = {{ disparo:'DISPARO', mantenimiento:'MANTENIMIENTO', desenergizacion:'DESENERGIZACIÓN', maniobra:'MANIOBRA', generacion:'GENERACIÓN', otro:'OTRO' }};
+        return m[e.tipo] || (e.tipo_detalle || '').toUpperCase();
+    }}
+    function tipoCls(e) {{
+        var m = {{ disparo:'t-disp', mantenimiento:'t-mant', desenergizacion:'t-desen', maniobra:'t-man' }};
+        return m[e.tipo] || '';
+    }}
+    function durTxt(h) {{
+        if (!h) return '—';
+        if (h < 1) return Math.round(h * 60) + ' min';
+        return h.toFixed(1) + ' h';
+    }}
+
+    // Detalle por activo
+    var detalle = activos.map(function(act) {{
+        var lista = grupos[act];
+        lista.sort(function(a, b) {{ return (a.fecha + (a.hora||'')) < (b.fecha + (b.hora||'')) ? -1 : 1; }});
+        var hAct = lista.reduce(function(a, e) {{ return a + (e.duracion || 0); }}, 0);
+        var rows = lista.map(function(e) {{
+            return '<tr>'
+                + '<td>' + e.fecha + (e.hora ? ' ' + e.hora : '') + '</td>'
+                + '<td class="' + tipoCls(e) + '">' + tipoLabel(e) + '</td>'
+                + '<td>' + durTxt(e.duracion) + '</td>'
+                + '<td>' + (e.causa || '—') + '</td>'
+                + '<td><span class=narr>' + escHtml(e.narrativa || '—') + '</span></td>'
+                + '</tr>';
+        }}).join('');
+        return '<div class=act-blk>'
+            + '<div class=act-hd>' + escHtml(act)
+            + '<span class=meta>' + lista.length + ' evento' + (lista.length > 1 ? 's' : '') + ' &middot; ' + durTxt(hAct) + '</span></div>'
+            + '<table class=det><tr><th>Fecha / Hora</th><th>Tipo</th><th>Duración</th><th>Causa</th><th>Narrativa AMM</th></tr>'
+            + rows + '</table></div>';
+    }}).join('');
+
+    var logoHtml = LOGO ? '<td><img src="' + LOGO + '" width="' + LOGO_W + '" height="' + LOGO_H + '"></td>' : '';
+    var contenido = '<div class=hd><table class=hdt><tr>' + logoHtml
+        + '<td><h1>Informe de Eventos del Posdespacho AMM</h1><div class=s>Comisi&oacute;n Nacional de Energ&iacute;a El&eacute;ctrica &bull; Guatemala</div></td></tr></table></div>'
+        + '<div class=body>'
+        + '<p><b>Per&iacute;odo:</b> ' + periodo + '. <b>Generado:</b> ' + new Date().toLocaleString('es-GT') + '.</p>'
+        + '<h2>Resumen ejecutivo</h2>'
+        + '<table class=boxt><tr>'
+        + '<td class=kpi><b>' + evs.length + '</b><span>Eventos totales</span></td>'
+        + '<td class=kpi><b>' + nDisp  + '</b><span>Disparos</span></td>'
+        + '<td class=kpi><b>' + nMant  + '</b><span>Mantenimientos</span></td>'
+        + '<td class=kpi><b>' + nDesen + '</b><span>Desenerg.</span></td>'
+        + '<td class=kpi><b>' + totalH.toFixed(1) + '</b><span>Horas total</span></td>'
+        + '</tr></table>'
+        + '<h2>Detalle por activo</h2>' + detalle
+        + '<div class=ft>Fuente: Posdespacho diario AMM &bull; &Uacute;ltimo posdespacho procesado: ' + ULTIMA_FECHA + ' &bull; CNEE &mdash; Ing. Estuardo Garc&iacute;a, Cient&iacute;fico de Datos.</div>'
+        + '</div>';
+
+    var fname = 'Informe_Posdespacho_CNEE_' + (f.dateFrom || '') + '_a_' + (f.dateTo || '') + '.doc';
+    var wordHtml = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">'
+        + '<head><meta charset=utf-8><title>Informe Posdespacho CNEE</title>'
+        + '<!--[if gte mso 9]><xml><w:WordDocument><w:View>Print</w:View><w:Zoom>100</w:Zoom></w:WordDocument></xml><![endif]-->'
+        + '<style>' + cssBase + cssWord + '</style></head><body><div class=Sec1>' + contenido + '</div></body></html>';
+    var wurl = URL.createObjectURL(new Blob(['﻿' + wordHtml], {{type: 'application/msword'}}));
+
+    var rep = '<!DOCTYPE html><html lang=es><head><meta charset=utf-8><title>Informe Posdespacho CNEE</title>'
+        + '<style>' + cssBase + cssNav + '</style></head><body>'
+        + '<div class=btns>'
+        + '<button class=btn-acc onclick=window.print()>&#128424; Imprimir / PDF</button>'
+        + '<a class=btn-acc href="' + wurl + '" download="' + fname + '">&#128462; Descargar Word</a>'
+        + '</div>'
+        + '<table class=pgtbl><thead><tr><td class=pgpad></td></tr></thead>'
+        + '<tbody><tr><td class=pgmain>' + contenido + '</td></tr></tbody>'
+        + '<tfoot><tr><td class=pgpad></td></tr></tfoot></table></body></html>';
+
+    var w = window.open('', '_blank');
+    w.document.write(rep);
+    w.document.close();
+}}
+
 </script>
 </body>
 </html>"""
