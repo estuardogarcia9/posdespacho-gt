@@ -15,6 +15,10 @@ PD*.zip
 # La DB SÍ va al repo (se actualiza diariamente por el bot)
 # posdespacho_amm.db  <- NO ignorar
 
+# SQLite WAL (archivos temporales, nunca commitear)
+*.db-shm
+*.db-wal
+
 # Backups
 *.bak
 *.orig
