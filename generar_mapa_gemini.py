@@ -824,8 +824,7 @@ body {{ font-family: var(--cnee-font); -webkit-font-smoothing:antialiased; text-
     <h3 onclick="togglePanel('infoPanel','infoToggleIcon')">&#9889; Posdespachos <span class="toggle-icon" id="infoToggleIcon">&#x25B2;</span></h3>
     <div class="tab-bar">
         <button class="tab-btn active" id="tabbtn-procesados" onclick="switchTab('procesados')">Procesados</button>
-        <button class="tab-btn" id="tabbtn-raw" onclick="switchTab('raw')">Raw</button>
-        <button onclick="generarInforme()" title="Generar informe del período visible" style="margin-left:auto;background:var(--gold);color:var(--navy-950);border:0;padding:5px 10px;border-radius:7px;font-family:inherit;font-weight:700;font-size:11px;cursor:pointer;white-space:nowrap;">&#128196; Informe</button>
+        <button class="tab-btn" id="tabbtn-raw" onclick="switchTab('raw')">Original</button>
     </div>
     <div class="tab-content" id="tab-procesados"></div>
     <div class="tab-content" id="tab-raw" style="display:none;"></div>
@@ -859,6 +858,9 @@ body {{ font-family: var(--cnee-font); -webkit-font-smoothing:antialiased; text-
 
         <div style="text-align:center;margin-top:6px;">
             <button class="filter-btn reset" onclick="resetFilters()">&#x21BA; Reset filtros</button>
+        </div>
+        <div style="text-align:center;margin-top:8px;">
+            <button onclick="generarInforme()" style="background:var(--gold);color:var(--navy-950);border:0;padding:7px 0;border-radius:8px;font-family:inherit;font-weight:700;font-size:12px;cursor:pointer;width:100%;">&#128196; Generar informe</button>
         </div>
     </div>
 </div>
@@ -897,7 +899,7 @@ body {{ font-family: var(--cnee-font); -webkit-font-smoothing:antialiased; text-
 
 
 <button id="btn2d" class="btn-3d" title="Ver en 3D" style="display:none;">&#x26F0;&#xFE0F; Ver en 3D</button>
-<div id="lastUpdateBadge" style="position:fixed;bottom:28px;left:10px;z-index:900;background:rgba(11,21,46,0.82);color:#E2B45F;font-size:11px;padding:4px 9px;border-radius:4px;pointer-events:none;border:1px solid rgba(226,180,95,0.3);letter-spacing:0.3px;">&#x1F4C5; &Uacute;ltimo posdespacho: {fecha_display}</div>
+<div id="lastUpdateBadge" style="position:fixed;bottom:28px;left:10px;z-index:900;background:rgba(11,21,46,0.82);color:#E2B45F;font-size:14px;padding:6px 12px;border-radius:4px;pointer-events:none;border:1px solid rgba(226,180,95,0.3);letter-spacing:0.3px;">&#x1F4C5; &Uacute;ltimo posdespacho: {fecha_display}</div>
 
 <div id="deck3d">
     <div id="deck3dCanvas"></div>
@@ -921,14 +923,9 @@ body {{ font-family: var(--cnee-font); -webkit-font-smoothing:antialiased; text-
 {tipo_checkboxes_3d}
         </div>
         <button class="d3-fbtn reset" id="d3Reset">&#x21BA; Reset filtros</button>
-        <h4 style="margin-top:16px;">Capa base</h4>
-        <div class="d3-seg">
-            <button id="d3baseLight"              onclick="d3setBase('light')">&#9728; Claro</button>
-            <button id="d3baseDark"  class="active" onclick="d3setBase('dark')">&#9790; Oscuro</button>
-        </div>
         <button class="d3-fbtn" style="margin-top:12px;" onclick="generarInforme()">&#128196; Generar informe</button>
     </div>
-    <div class="d3-hud" style="bottom:8px;left:10px;font-size:11px;color:#fff;pointer-events:none;">Autor CNEE: Cient&iacute;fico de datos, Ing. Estuardo Garc&iacute;a<br><span style="color:#E2B45F;">&#x1F4C5; &Uacute;ltimo posdespacho: {fecha_display}</span></div>
+    <div class="d3-hud" style="bottom:8px;left:10px;font-size:13px;color:#fff;pointer-events:none;">Autor CNEE: Cient&iacute;fico de datos, Ing. Estuardo Garc&iacute;a<br><span style="color:#E2B45F;font-size:14px;">&#x1F4C5; &Uacute;ltimo posdespacho: {fecha_display}</span></div>
     <button id="btn3d" class="btn-3d" title="Ver en 2D">&#x1F5FA;&#xFE0F; Ver en 2D</button>
     <div id="d3popup" style="display:none;position:absolute;top:60px;right:10px;width:310px;max-height:calc(100vh - 80px);overflow-y:auto;background:rgba(11,21,46,0.97);border:1px solid rgba(200,160,60,0.25);border-top:3px solid #E2B45F;border-radius:10px;padding:14px;font-family:inherit;color:#ccd6f6;z-index:20;box-shadow:0 10px 40px rgba(0,0,0,0.6);">
         <div id="d3popupContent"></div>
@@ -1107,17 +1104,10 @@ TOPO_SUBS.forEach(function(s) {{
 
 L.control.layers(
     {{ "Oscuro": darkMatter, "Claro (OSM)": osmLight, "Satelital + etiquetas": satelital }},
-    {{ "Lineas de Transmision": linesLayer, "Eventos": eventsLayer, "Subestaciones": subsCluster, "Generadoras": genCluster, "Solo Disparos": tripsLayer, "Vulnerabilidad Topologica": topoLayer }},
+    {{ "Lineas de Transmision": linesLayer, "Eventos": eventsLayer, "Subestaciones": subsCluster, "Generadoras": genCluster }},
     {{ collapsed: false, position: 'topleft' }}
 ).addTo(map);
 
-// Mostrar la leyenda topologica solo cuando la capa esta activa
-map.on('overlayadd', function(e) {{
-    if (e.name === 'Vulnerabilidad Topologica') document.getElementById('topoLegend').style.display = 'block';
-}});
-map.on('overlayremove', function(e) {{
-    if (e.name === 'Vulnerabilidad Topologica') document.getElementById('topoLegend').style.display = 'none';
-}});
 
 function getFilterState() {{
     var dateFrom = document.getElementById('dateFrom').value;
