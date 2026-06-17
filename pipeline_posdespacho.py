@@ -557,7 +557,7 @@ def main():
     forzar = '--forzar' in sys.argv[1:]
 
     if not args:
-        fecha_ini = date.today() - timedelta(days=1)
+        fecha_ini = date.today() - timedelta(days=2)
         fecha_fin = fecha_ini
     elif len(args) == 1:
         fecha_ini = parse_fecha(args[0])
