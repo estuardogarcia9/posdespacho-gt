@@ -568,7 +568,7 @@ def main():
 
     if not args:
         fecha_ini = date.today() - timedelta(days=2)
-        fecha_fin = fecha_ini
+        fecha_fin = date.today()
     elif len(args) == 1:
         fecha_ini = parse_fecha(args[0])
         fecha_fin = fecha_ini
