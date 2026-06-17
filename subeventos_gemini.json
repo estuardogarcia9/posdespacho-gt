@@ -69570,5 +69570,145 @@
     "mw_perdidos": null,
     "generadores_afectados": [],
     "narrativa_original": "•  Disparó interruptor 69 kV Huehuetenango – Ixtahuacán de 18:59 a 19:04 horas. La carga conectada en Ixtahuacán estuvo sin servicio de 18:59 a 19:07 horas."
+  },
+  {
+    "id": 4318,
+    "tipo": "disparo",
+    "causa": "Disparo",
+    "activo_nombre": "LT LA MÁQUINA-MAZATENANGO",
+    "voltaje_kv": 69,
+    "subestaciones_afectadas": [
+      "LA MÁQUINA",
+      "MAZATENANGO"
+    ],
+    "hora_inicio": "15:25",
+    "hora_fin": "15:31",
+    "codigo_mantenimiento": "",
+    "carga_afectada": false,
+    "mw_perdidos": null,
+    "generadores_afectados": [],
+    "narrativa_original": "•  Disparó interruptor 69 kV Mazatenango – La Máquina de 15:25 a 15:28 horas. La carga estuvo sin servicio de 15:25 a 15:31 horas."
+  },
+  {
+    "id": 4319,
+    "tipo": "disparo",
+    "causa": "Disparo",
+    "activo_nombre": "LT LA MÁQUINA-MAZATENANGO",
+    "voltaje_kv": 69,
+    "subestaciones_afectadas": [
+      "LA MÁQUINA",
+      "MAZATENANGO"
+    ],
+    "hora_inicio": "18:05",
+    "hora_fin": "18:10",
+    "codigo_mantenimiento": "",
+    "carga_afectada": false,
+    "mw_perdidos": null,
+    "generadores_afectados": [],
+    "narrativa_original": "•  Disparó el interruptor 69 kV Mazatenango – La Máquina de 18:05 a 18:08 horas, la carga estuvo sin servicio de 18:05 a 18:10 horas."
+  },
+  {
+    "id": 4320,
+    "tipo": "disparo",
+    "causa": "Disparo",
+    "activo_nombre": "SE VIÑAS",
+    "voltaje_kv": 13,
+    "subestaciones_afectadas": [
+      "VIÑAS"
+    ],
+    "hora_inicio": "06:53",
+    "hora_fin": "06:57",
+    "codigo_mantenimiento": "",
+    "carga_afectada": false,
+    "mw_perdidos": null,
+    "generadores_afectados": [],
+    "narrativa_original": "•  Disparó el interruptor general de 13.8 kV en subestación Viñas de 06:53 a 06:55 horas, la carga asociada quedó servida a las 06:57 horas."
+  },
+  {
+    "id": 4321,
+    "tipo": "disparo",
+    "causa": "Disparo",
+    "activo_nombre": "Portuaria - El Carrizo",
+    "voltaje_kv": null,
+    "subestaciones_afectadas": [
+      "Portuaria - El Carrizo"
+    ],
+    "hora_inicio": "10:29",
+    "hora_fin": "10:34",
+    "codigo_mantenimiento": "",
+    "carga_afectada": false,
+    "mw_perdidos": null,
+    "generadores_afectados": [],
+    "narrativa_original": "•  Disparó la línea Portuaria – El carrizo, de 10:29 a 10:34 horas. por el disparo quedaron sin tensión las subestaciones Iztapa y Taxisco. La carga afectada quedó servida a las 10:34 horas."
+  },
+  {
+    "id": 4322,
+    "tipo": "disparo",
+    "causa": "Disparo",
+    "activo_nombre": "LT LAS FUENTES-LOS BRILLANTES",
+    "voltaje_kv": 69,
+    "subestaciones_afectadas": [
+      "LAS FUENTES",
+      "LOS BRILLANTES"
+    ],
+    "hora_inicio": "17:21",
+    "hora_fin": "17:25",
+    "codigo_mantenimiento": "",
+    "carga_afectada": false,
+    "mw_perdidos": null,
+    "generadores_afectados": [],
+    "narrativa_original": "•  Disparan interruptores 69 kV de la línea Los Brillantes – Las Fuentes de 17:21 a 17:25 horas, por este evento quedaron sin tensión las subestaciones Las Fuentes de 17:21 a 17:29 horas y Manantial de 17:21 a 17:35 horas."
+  },
+  {
+    "id": 4323,
+    "tipo": "disparo",
+    "causa": "Disparo",
+    "activo_nombre": "LT ESCUINTLA-TRINIDAD",
+    "voltaje_kv": 69,
+    "subestaciones_afectadas": [
+      "ESCUINTLA",
+      "TRINIDAD"
+    ],
+    "hora_inicio": "19:53",
+    "hora_fin": "20:04",
+    "codigo_mantenimiento": "",
+    "carga_afectada": false,
+    "mw_perdidos": null,
+    "generadores_afectados": [],
+    "narrativa_original": "•  Disparo de interruptor 69 kV Escuintla – Trinidad de 19:53 a 20:04 horas, dejando sin tensión durante ese periodo a Trinida bloque 4."
+  },
+  {
+    "id": 4324,
+    "tipo": "disparo",
+    "causa": "Disparo",
+    "activo_nombre": "Portuaria - El Carrizo",
+    "voltaje_kv": null,
+    "subestaciones_afectadas": [
+      "Portuaria - El Carrizo"
+    ],
+    "hora_inicio": "10:29",
+    "hora_fin": "10:35",
+    "codigo_mantenimiento": "",
+    "carga_afectada": false,
+    "mw_perdidos": null,
+    "generadores_afectados": [],
+    "narrativa_original": "•  Disparó la línea Portuaria – El carrizo, de 10:29 a 10:34 horas, por este disparo quedaron sin tensión las subestaciones Iztapa y Taxisco. La carga quedo servida a las 10:35 horas."
+  },
+  {
+    "id": 4325,
+    "tipo": "disparo",
+    "causa": "Disparo",
+    "activo_nombre": "La Vega (La Libertad 2)",
+    "voltaje_kv": 34.5,
+    "subestaciones_afectadas": [
+      "La Vega"
+    ],
+    "hora_inicio": "10:48",
+    "hora_fin": "11:06",
+    "codigo_mantenimiento": "",
+    "carga_afectada": false,
+    "mw_perdidos": null,
+    "generadores_afectados": [],
+    "narrativa_original": "•  Disparó el circuito la Vega en subestación La Libertad 2, por este evento quedó sin tensión planta Ocultún, provocando bajo voltaje en el área, también dispararon los circuitos en Fray Bartolomé de las Casas de 10:48 a 11:06 horas. Para el reingreso de la planta fue necesario desconectar los circuitos Los Naranjos, de 10:48 a 11:08 horas y Los Cuaches, de 10:50 a 11:07 horas, de la subestación La Libertad 2 y parte del circuito Melchor en Petén de 10:53 a 11:13 horas."
   }
 ]

@@ -14,7 +14,7 @@ Uso:
 import sys, io
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
 
-import json, os, time, urllib.request, tempfile, subprocess
+import json, os, time, urllib.request, tempfile, subprocess, hashlib
 from datetime import date, timedelta, datetime
 from pathlib import Path
 
@@ -40,7 +40,7 @@ from parsear_posdespacho import (
 from descargar_posdespacho import url_para_fecha
 
 # ── xAI ───────────────────────────────────────────────────────────────────────
-XAI_API_KEY  = os.environ['XAI_API_KEY']
+XAI_API_KEY  = os.environ.get('XAI_API_KEY') or (BASE / '.xai_key').read_text().strip() if (BASE / '.xai_key').exists() else os.environ['XAI_API_KEY']
 XAI_BASE_URL = 'https://api.x.ai/v1'
 MODEL        = 'grok-4.3'
 BATCH_SIZE   = 10
@@ -121,9 +121,19 @@ def _insertar_eventos_sqlite(conn, todos: list, fecha_str: str):
     vistos      = set()
 
     for ev in todos:
-        id_unico = safe_str(ev.get('ID Único')) or f'{ev.get("ID")}.1'
+        id_unico = safe_str(ev.get('ID Único')) or safe_str(ev.get('ID'))
         id_grupo = safe_str(ev.get('ID'))
-        if not id_unico or id_unico in vistos:
+        # Si la AMM no asignó ID (eventos abiertos/preliminares), generar uno
+        # estable a partir del contenido para evitar colisiones en la BD.
+        if not id_unico:
+            _h = hashlib.md5(
+                f"{ev.get('Fecha inicial','')}{ev.get('Fuente','')}{ev.get('Narrativa del AMM','')}"
+                .encode('utf-8', errors='replace')
+            ).hexdigest()[:12]
+            id_unico = f'AUTO_{_h}'
+            if not id_grupo:
+                id_grupo = id_unico
+        if id_unico in vistos:
             continue
         vistos.add(id_unico)
 

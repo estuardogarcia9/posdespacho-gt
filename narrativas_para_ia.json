@@ -20108,5 +20108,45 @@
     "id": 4317,
     "fecha": "2026-06-14",
     "narrativa": "•  Disparó interruptor 69 kV Huehuetenango – Ixtahuacán de 18:59 a 19:04 horas. La carga conectada en Ixtahuacán estuvo sin servicio de 18:59 a 19:07 horas."
+  },
+  {
+    "id": 4318,
+    "fecha": "2026-06-15",
+    "narrativa": "•  Disparó interruptor 69 kV Mazatenango – La Máquina de 15:25 a 15:28 horas. La carga estuvo sin servicio de 15:25 a 15:31 horas."
+  },
+  {
+    "id": 4319,
+    "fecha": "2026-06-15",
+    "narrativa": "•  Disparó el interruptor 69 kV Mazatenango – La Máquina de 18:05 a 18:08 horas, la carga estuvo sin servicio de 18:05 a 18:10 horas."
+  },
+  {
+    "id": 4320,
+    "fecha": "2026-06-15",
+    "narrativa": "•  Disparó el interruptor general de 13.8 kV en subestación Viñas de 06:53 a 06:55 horas, la carga asociada quedó servida a las 06:57 horas."
+  },
+  {
+    "id": 4321,
+    "fecha": "2026-06-15",
+    "narrativa": "•  Disparó la línea Portuaria – El carrizo, de 10:29 a 10:34 horas. por el disparo quedaron sin tensión las subestaciones Iztapa y Taxisco. La carga afectada quedó servida a las 10:34 horas."
+  },
+  {
+    "id": 4322,
+    "fecha": "2026-06-15",
+    "narrativa": "•  Disparan interruptores 69 kV de la línea Los Brillantes – Las Fuentes de 17:21 a 17:25 horas, por este evento quedaron sin tensión las subestaciones Las Fuentes de 17:21 a 17:29 horas y Manantial de 17:21 a 17:35 horas."
+  },
+  {
+    "id": 4323,
+    "fecha": "2026-06-15",
+    "narrativa": "•  Disparo de interruptor 69 kV Escuintla – Trinidad de 19:53 a 20:04 horas, dejando sin tensión durante ese periodo a Trinida bloque 4."
+  },
+  {
+    "id": 4324,
+    "fecha": "2026-06-15",
+    "narrativa": "•  Disparó la línea Portuaria – El carrizo, de 10:29 a 10:34 horas, por este disparo quedaron sin tensión las subestaciones Iztapa y Taxisco. La carga quedo servida a las 10:35 horas."
+  },
+  {
+    "id": 4325,
+    "fecha": "2026-06-15",
+    "narrativa": "•  Disparó el circuito la Vega en subestación La Libertad 2, por este evento quedó sin tensión planta Ocultún, provocando bajo voltaje en el área, también dispararon los circuitos en Fray Bartolomé de las Casas de 10:48 a 11:06 horas. Para el reingreso de la planta fue necesario desconectar los circuitos Los Naranjos, de 10:48 a 11:08 horas y Los Cuaches, de 10:50 a 11:07 horas, de la subestación La Libertad 2 y parte del circuito Melchor en Petén de 10:53 a 11:13 horas."
   }
 ]

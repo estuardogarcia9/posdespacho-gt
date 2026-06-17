@@ -1,5 +1,6 @@
 # Secretos locales
 .env
+.xai_key
 
 # Python
 __pycache__/
